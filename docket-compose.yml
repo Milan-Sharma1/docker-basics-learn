@@ -1,0 +1,25 @@
+# docker basics
+# file for docker-compose connect two images in the same network and using the same volume everytime 
+version: '3'
+services:
+  mongo: #container name 
+    image: mongo:latest # image name
+    ports:
+      - "27017:27017"
+    environment : #env variables
+      - MONGO_INITDB_ROOT_USERNAME=admin
+      - MONGO_INITDB_ROOT_PASSWORD=hello
+    volumes: #specifying volumes to use so that every time container is created , use the same data
+      - mymongo-vol:/data/db # this data/db path is different for another db like sql or anything main thing is that this path is the location for the volume to mount 
+  mongo-express: #another service(container) for viewing the mongo db  
+    image: mongo-express
+    restart: always #restart flag to keep trying for connection because sometime the container making order is different
+    ports:
+      - "8081:8081"
+    environment :
+      - ME_CONFIG_MONGODB_ADMINUSERNAME=admin
+      - ME_CONFIG_MONGODB_ADMINPASSWORD=hello 
+      - ME_CONFIG_MONGODB_SERVER=mongo
+volumes: # specefying volumes to create
+  mymongo-vol:
+    driver: local
